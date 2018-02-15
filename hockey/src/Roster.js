@@ -94,7 +94,13 @@ class Roster extends Component {
 
 
     buildTeams() {
+        if (isNaN(this.state.numberOfSquads)) {
+            alert('Only enter numbers, please')
+            return
+        }
+
         if (this.state.numberOfSquads <= 0) {
+            alert('Only positive numbers of teams allowed')            
             return
         }
         if (this.state.numberOfSquads > this.tb.maxTeams()) {
