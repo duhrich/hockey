@@ -13,3 +13,4 @@ Here are a few notes about my submission.
 - 'yarn test' will run the test suite (it's interactive, you may have to press 'a' to re-run the tests)
 - 'yarn start' will run it on a test server
 - 'yarn build' will create a production build (this is what is deployed on my server)
+- the json file is coming from my server, package.json is configured to proxy API requests when running in dev mode, so I believe it should still work for you
