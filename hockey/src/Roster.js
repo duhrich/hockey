@@ -181,7 +181,7 @@ class Roster extends Component {
                 {this.renderWelcome()}
                 {this.renderControls()}
                 <div className="Container">
-                    <div className="TeamContainer"
+                    <div className="Column"
                         style={{
                             display: this.state.teams.length > 0 ? '' : 'none',
                         }}

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Team from './Team';
+import Team from '../Team';
 import { configure, shallow } from 'enzyme';
 
 import Adapter from 'enzyme-adapter-react-16';

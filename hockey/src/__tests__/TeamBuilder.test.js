@@ -1,7 +1,7 @@
-import TeamBuilder from './TeamBuilder'
-import testJson from '../data/xplayers.json'
-import smallJson from '../data/2players.json'
-import Team from './Team';
+import TeamBuilder from '../TeamBuilder'
+import testJson from '../../data/xplayers.json'
+import smallJson from '../../data/2players.json'
+import Team from '../Team';
 const tb = new TeamBuilder()
 
 it('initializes with defaults', () => {

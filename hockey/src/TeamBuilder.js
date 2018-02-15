@@ -8,7 +8,7 @@ class TeamBuilder {
         this.numberOfPlayersPerTeam = 6
         this.players = []
         this.teams = {}
-        this.snapshots = []
+        this.snapShots = []
     }
 
     loadPlayers(playerJson) {
@@ -39,11 +39,10 @@ class TeamBuilder {
         }
     }
 
-    getRandomPlayerIndex = () => {
+    getRandomPlayerIndex() {
         const min = 0
         const max = this.players.length - 1
         const index = Math.floor(Math.random() * (max - min + 1)) + min
-        // return this.players.splice(index, 1)[0]
         return index
     }
 
@@ -68,13 +67,13 @@ class TeamBuilder {
             teamSnapshot.players = t.players.map(p => p._id)
             snapShot.teams[t._id] = teamSnapshot
         })
-        this.snapshots.push(snapShot)
+        this.snapShots.push(snapShot)
     }
 
     restoreBestSnapshot() {
         this.reset()
-        const minBalanceFactor = Math.min(...this.snapshots.map(s => s.balanceFactor))
-        const bestSnapshot = this.snapshots.filter(s => s.balanceFactor === minBalanceFactor)[0]
+        const minBalanceFactor = Math.min(...this.snapShots.map(s => s.balanceFactor))
+        const bestSnapshot = this.snapShots.filter(s => s.balanceFactor === minBalanceFactor)[0]
 
         Object.values(bestSnapshot.teams).forEach(t => {
             let team = {}
@@ -91,14 +90,14 @@ class TeamBuilder {
 
 
     generateTeamsRepeatedly(count, iterations = 100) {
-        this.snapshots = []
+        this.snapShots = []
         for (let iter = 0; iter < iterations; iter++) {
             this.generateTeams(count, true)
             this.snapShot()
             this.reset()
         }
         this.restoreBestSnapshot()
-        this.snapshots = []
+        this.snapShots = []
     }
 
     generateTeams(count, random = false) { //, iterations = 100) {

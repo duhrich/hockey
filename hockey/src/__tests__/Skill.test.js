@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Skill from './Skill';
-import { Bar } from './styles'
+import Skill from '../Skill';
+import { Bar } from '../styles'
 import { configure, shallow } from 'enzyme';
 
 import Adapter from 'enzyme-adapter-react-16';
