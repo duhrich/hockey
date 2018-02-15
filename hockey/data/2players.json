@@ -1,0 +1,62 @@
+{
+    "players": [
+      {
+        "_id": "5a6cfd0ecb8529576fe1dce7",
+        "firstName": "Sosa",
+        "lastName": "Williams",
+        "skills": [
+          {
+            "type": "Shooting",
+            "rating": 23
+          },
+          {
+            "type": "Skating",
+            "rating": 39
+          },
+          {
+            "type": "Checking",
+            "rating": 83
+          }
+        ]
+      },
+      {
+        "_id": "5a6cfd0ed513bc24ff471719",
+        "firstName": "Hart",
+        "lastName": "Hardin",
+        "skills": [
+          {
+            "type": "Shooting",
+            "rating": 87
+          },
+          {
+            "type": "Skating",
+            "rating": 22
+          },
+          {
+            "type": "Checking",
+            "rating": 43
+          }
+        ]
+      },
+      {
+        "_id": "5a6cfd0ea6359d1b132e2520",
+        "firstName": "Heather",
+        "lastName": "Castro",
+        "skills": [
+          {
+            "type": "Shooting",
+            "rating": 78
+          },
+          {
+            "type": "Skating",
+            "rating": 59
+          },
+          {
+            "type": "Checking",
+            "rating": 73
+          }
+        ]
+      }
+    ]
+}
+  
