@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
+import { Bar } from './styles'
 
 class Skill extends Component {
-    // constructor(props) {
-    //     super(props)
-    //     // console.log("building skill with",props)
-    // }
-
     render() {
-        const { type, rating } = this.props
+        let { type, rating } = this.props
+        if (!rating) {
+            rating = 0
+        }
         return (
             <div className="Skill">
-                {/* <div className="SkillType">{type}</div> */}
-                <div className="SkillRating">{Math.round(rating)}</div>
+                <Bar value={rating/10} type={type}/>
             </div>
         )
     }
-
 }
 
 

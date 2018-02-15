@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  text-align: left;
 }
 
 .App-logo {
@@ -9,7 +9,7 @@
 
 .App-header {
   background-color: #222;
-  height: 150px;
+  height: 50px;
   padding: 20px;
   color: white;
 }
@@ -27,52 +27,111 @@
   to { transform: rotate(360deg); }
 }
 
+.Controls {
+  padding: 20px;
+}
 
 .Container {
+  padding: 10px;
   display: flex;
-  width: 100%;
+  /* width: 100%; */
+}
+
+.Welcome {
+  padding: 20px;
+  background-color: lightgrey;
+  margin:20px;
+  border-radius: 10px;
 }
 
 .Column {
   font-family: sans-serif;
   flex-direction:column;
   align-items: flex-start;
-  text-align: left;
-  margin: 10px;
+  text-align: center;
+  margin: 0px;
   padding:10px;
   width: 50%;
 }
 
-.Team {
-  background-color:lightgreen;
-  margin: 10px;
-  padding: 10px;
-  border-radius:10px;
+@media (max-width: 550px) {
+  .Container {
+    display: block;
+  }
+  .Column {
+    width: 95%;
+    
+  }
 }
 
+.Team {
+  text-align:left;
+  background-color: whitesmoke;
+  box-shadow: 5px 5px 5px lightgray;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius:10px;
+  min-width: 250px;
+}
 
 .Hide {
   display: none;
 }
 
+.Legend {
+  display: flex;
+  margin: 10px;
+  justify-content: space-around;  
+}
+
+.Unassigned {
+  text-align: left;
+  background-color:whitesmoke;
+  box-shadow: 5px 5px 5px lightgray;
+  border-radius: 10px;
+  padding: 10px;
+}
+
 .Player {
-  display: block;
-  background-color:lightblue;
-  width : 100%;
   margin: 10px;
   padding: 10px;
-  border-radius: 10px;
+  height: 35px;
 }
 
 .Skills {
   float: right;
+  background-color:lightgray;
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  align-items: flex-end;
   
 }
 
 .Skill {
-  border:1px;
-  border-color: firebrick;
-  background-color: yellow;
-  width: 50px;
+  width: 20px;
+  padding-top: 5px;
   display:inline-flex;
+}
+
+
+.Number {
+  border: 2px solid lightgray;
+  margin: 10px;
+  height: 22px;
+  width: 40px;
+  padding: 5px;
+  font-size: 18px;
+
+}
+
+
+.Button {
+  border: 2px solid lightblue;
+  background-color: lighty;
+  background-color: lightcyan;
+  border-radius: 5px;
+  height: 35px;
+  widows: 100px;
+  margin: 10px;
 }

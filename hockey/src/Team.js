@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import Player from './Player'
 import Skill from './Skill'
 
-
-
 class Team extends Component {
 
     constructor(props) {
@@ -16,7 +14,7 @@ class Team extends Component {
     }
 
     eachSkill(skill, i) {
-        const computedKey = this.props.key + " " + skill.type
+        const computedKey = this.props._id + " " + skill.type
         return (
             <Skill key={computedKey}
                 type={skill.type}
@@ -24,8 +22,6 @@ class Team extends Component {
             />
         )
     }
-
-
 
     eachPlayer(player, i) {
         return (
@@ -48,12 +44,17 @@ class Team extends Component {
         return (
             <div className="Team">
                 Team {this.props.index}
-                <button onClick={this.togglePlayers}>{this.state.playersShown ? "Hide" : "Show"} Players</button>
+                <button className="Button" onClick={this.togglePlayers}>{this.state.playersShown ? "Hide" : "Show"} Players</button>
                 <div className="Skills">
                     {this.props.skillSet.map(this.eachSkill)}
                 </div>
 
-                <div className={this.state.playersShown ? "Show" : "Hide"}>
+                <div className="PlayersContainer"
+                    style={{
+                        display: this.state.playersShown > 0 ? '' : 'none',
+                    }}
+                >
+
                     {this.props.players.map(this.eachPlayer)}
                 </div>
             </div>

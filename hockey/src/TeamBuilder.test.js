@@ -12,14 +12,13 @@ it('initializes with defaults', () => {
     expect(tb.numTeams()).toBe(0)
 })
 
-
 it('updates team size',() => {
     tb.playersPerTeam = 5
     expect(tb).toHaveProperty('numberOfPlayersPerTeam', 5)
 })
 
 it('throws on bad json', () => {
-    const tb = new TeamBuilder()
+    // const tb = new TeamBuilder()
     const string = "not valid json"
     expect(() => tb.loadPlayers(string)).toThrow('JSON does not contain players!')
     const almostCorrect = "{'players':'still not right'}"
@@ -36,8 +35,6 @@ it('should not load duplicates', () => {
     expect(tb.unassignedPlayerCount()).toBe(40)
 })
 
-
-
 it('calculates max team size', () => {
     tb.playersPerTeam = 6
     expect(tb.maxTeams()).toBe(6)
@@ -52,26 +49,24 @@ it('refuses to generate more teams than possible', () => {
     expect(tb.unassignedPlayerCount()).toBe(40)
 })
 
-let id1,id2
+// let id1,id2
 
 it('generates team', () => {
     tb.playersPerTeam = 6
-    id1 = tb.generateTeams(1)[0]
+    tb.generateTeams(1)
     expect(tb.numTeams()).toBe(1)
-    expect(tb.teamCount(id1)).toBe(6)
     expect(tb.unassignedPlayerCount()).toBe(34)
     expect(tb.allPlayers()).toHaveLength(40)
-    id2 = tb.generateTeams(1)[0]
-    expect(tb.numTeams()).toBe(2)
-    expect(tb.teamCount(id2)).toBe(6)
+    tb.generateTeams(1)
+    expect(tb.numTeams()).toBe(1)
     expect(tb.allPlayers()).toHaveLength(40)
-    expect(tb.unassignedPlayerCount()).toBe(28)
+    expect(tb.unassignedPlayerCount()).toBe(34)
 })
 
 it('resets', () => {
     tb.reset()
     expect(tb.unassignedPlayerCount()).toBe(40)
-    const ids = tb.generateTeams(5)
+    tb.generateTeams(5)
     expect(tb.numTeams()).toBe(5)
     expect(tb.unassignedPlayerCount()).toBe(10)
     tb.reset()
@@ -90,7 +85,8 @@ it('finds team ratings', () => {
     expect(() => tb.teamSkillLevel('invalid id')).toThrow('Invalid team ID')
     const allnames = tb.allPlayers().reduce((a,p) => a + p.firstName + " ","")
     expect(allnames).toBe("Heather Hendricks Mindy Wheeler Cora Hutchinson Margarita Cervantes Daniel Nunez Raymond Hilary Tameka Anastasia Alma Good Wagner Janie Espinoza Maura Genevieve Trina Berg Mckay Noemi Ada Bartlett Katelyn Mavis Cole Cathryn Hope Wilma Pitts Mayra Schneider Dickson Mccray Sosa Hart ")
-    let [id1,id2] = tb.generateTeams(2)
+    tb.generateTeams(2)
+    let [id1,id2] = Object.keys(tb.teams)
     let team1names = tb.teams[id1].players.reduce((a,p) => a + p.firstName + " ","")
     expect(team1names).toBe('Heather Hendricks Mindy Wheeler Cora Hutchinson ')
     let team2names = tb.teams[id2].players.reduce((a,p) => a + p.firstName + " ","")
@@ -100,5 +96,16 @@ it('finds team ratings', () => {
     expect(() => tb.teamSkillLevel(id1,'Boxing')).toThrow('Player does not have specified skill')
     expect(tb.teamSkillLevel(id1,'Shooting')).toBeCloseTo(67.33)
     expect(tb.teamSkillLevel(id1,'Skating')).toBeCloseTo(61.17)
+})
 
+
+it('snapshots and restores', () => {
+    tb.snapShot()
+    tb.reset()
+    expect(tb.unassignedPlayerCount()).toBe(40)
+    expect(Object.keys(tb.teams)).toHaveLength(0)
+    tb.restoreBestSnapshot()
+    let [id1,id2] = Object.keys(tb.teams)
+    let team1names = tb.teams[id1].players.reduce((a,p) => a + p.firstName + " ","")
+    expect(team1names).toBe('Heather Hendricks Mindy Wheeler Cora Hutchinson ')
 })

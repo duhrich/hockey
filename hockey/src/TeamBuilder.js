@@ -1,18 +1,15 @@
 import uuid from 'uuid'
-import Team from './Team';
-//let uuid = require('uuid')
 
 class TeamBuilder {
 
+    static SkillSet = ['Shooting', 'Skating', 'Checking']
+
     constructor() {
-        console.log("building teambuilder")
         this.numberOfPlayersPerTeam = 6
         this.players = []
         this.teams = {}
+        this.snapshots = []
     }
-
-
-    static SkillSet = ['Shooting','Skating','Checking']
 
     loadPlayers(playerJson) {
         if (playerJson && playerJson.players && Array.isArray(playerJson.players)) {
@@ -23,8 +20,6 @@ class TeamBuilder {
                 ...this.players,
                 ...newPlayers
             ]
-
-            // console.log(`loaded ${newPlayers.length} players!`)
         } else {
             throw new Error('JSON does not contain players!')
         }
@@ -37,33 +32,99 @@ class TeamBuilder {
             // console.log(await response.text())
             const json = await response.json()
             this.loadPlayers(json)
+            return true
         } catch (err) {
             console.log("Load failed" + err)
+            return false
         }
     }
 
-    generateTeams(count) {
-        let ids = []
-        if (this.unassignedPlayerCount() < this.numberOfPlayersPerTeam * count) {
+    getRandomPlayerIndex = () => {
+        const min = 0
+        const max = this.players.length - 1
+        const index = Math.floor(Math.random() * (max - min + 1)) + min
+        // return this.players.splice(index, 1)[0]
+        return index
+    }
+
+    skillBalanceFactor() {
+        let ranges = []
+        TeamBuilder.SkillSet.forEach(ss => {
+            const skillRating = Object.values(this.teams).map(t => this.teamSkillLevel(t._id, ss))
+            ranges.push(Math.max(...skillRating) - Math.min(...skillRating))
+        })
+        return ranges.reduce((a, x) => a + x) / ranges.length
+    }
+
+
+    snapShot() {
+        let snapShot = {}
+        snapShot.balanceFactor = this.skillBalanceFactor()
+        snapShot.teams = {}
+
+        Object.values(this.teams).forEach(t => {
+            let teamSnapshot = {}
+            teamSnapshot._id = t._id
+            teamSnapshot.players = t.players.map(p => p._id)
+            snapShot.teams[t._id] = teamSnapshot
+        })
+        this.snapshots.push(snapShot)
+    }
+
+    restoreBestSnapshot() {
+        this.reset()
+        const minBalanceFactor = Math.min(...this.snapshots.map(s => s.balanceFactor))
+        const bestSnapshot = this.snapshots.filter(s => s.balanceFactor === minBalanceFactor)[0]
+
+        Object.values(bestSnapshot.teams).forEach(t => {
+            let team = {}
+            team._id = t._id
+            team.players = []
+            t.players.forEach(pid => {
+                const index = this.players.map(p => p._id).indexOf(pid)
+                const playerToMove = this.players.splice(index, 1)[0]
+                team.players.push(playerToMove)
+            })
+            this.teams[team._id] = team
+        })
+    }
+
+
+    generateTeamsRepeatedly(count, iterations = 100) {
+        this.snapshots = []
+        for (let iter = 0; iter < iterations; iter++) {
+            this.generateTeams(count, true)
+            this.snapShot()
+            this.reset()
+        }
+        this.restoreBestSnapshot()
+        this.snapshots = []
+    }
+
+    generateTeams(count, random = false) { //, iterations = 100) {
+        if (count > this.maxTeams()) {
             throw new Error(`Not enough players to generate teams`)
         }
+        this.reset()
         for (let i = 0; i < count; i++) {
             let team = {}
             team._id = uuid()
-            ids.push(team._id)
             team.players = []
             for (let j = 0; j < this.numberOfPlayersPerTeam; j++) {
-                const playerToMove = this.players.splice(0, 1)[0]
+                let index = 0
+                if (random) {
+                    index = this.getRandomPlayerIndex()
+                }
+                const playerToMove = this.players.splice(index, 1)[0]
                 team.players.push(playerToMove)
             }
             this.teams[team._id] = team
         }
-        return ids
     }
 
     maxTeams() {
         if (this.players) {
-            return Math.floor(this.unassignedPlayerCount() / this.numberOfPlayersPerTeam)
+            return Math.floor(this.allPlayers().length / this.numberOfPlayersPerTeam)
         } else {
             return 0
         }
@@ -114,7 +175,7 @@ class TeamBuilder {
     teamSkillSet(teamId) {
         let skillSet = []
         TeamBuilder.SkillSet.forEach(ss => {
-            skillSet.push({type:ss,rating:this.teamSkillLevel(teamId,ss)})
+            skillSet.push({ type: ss, rating: this.teamSkillLevel(teamId, ss) })
         })
         return skillSet
     }
@@ -138,17 +199,11 @@ class TeamBuilder {
     }
 
     allPlayers() {
-        // some wacky array processing to take all players from all teams and unassigned players 
-        // and put them into a single array
-        let playerList = []
-
-        this.players.forEach(p => playerList.push(p))
-        Object.values(this.teams).forEach(t => t.players.forEach(p => playerList.push(p)))
-        return playerList
-        // return [
-        //     ...this.players,
-        //     // ...[].concat(...teamPlayers).map(a => a[0])
-        // ]
+        const teamPlayers = Object.values(this.teams).map(t => t.players)
+        return [
+            ...this.players,
+            ...[].concat(...teamPlayers)
+        ]
     }
 
 
@@ -168,17 +223,3 @@ class TeamBuilder {
 }
 
 export default TeamBuilder
-// let tb = new TeamBuilder()
-// let json = require('../data/xplayers.json')
-// tb.loadPlayers(json)
-// console.log(tb.allPlayers.length)
-// console.log(tb.playerSkillLevel('5a6cfd0ecb8529576fe1dce7','Checking'))
-
-
-// let t1 = tb.generateTeams(1)[0]
-// tb.allPlayers.forEach((p,i) => console.log(i,p._id))
-
-// console.log(tb.playerSkillLevel('5a6cfd0ecb8529576fe1dce7','Checking'))
-// console.log("made team",t1)
-// tb.allPlayers.forEach(p => console.log(p._id))
-// console.log(tb.playerSkillLevel('5a6cfd0ecb8529576fe1dce7','Checking'))

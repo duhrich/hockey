@@ -2,12 +2,11 @@ import React, { Component } from 'react'
 import Player from './Player'
 import Team from './Team'
 import TeamBuilder from './TeamBuilder'
-const rosterUrl = "/yplayers.json"
+import { Bar } from './styles'
+
+const rosterUrl = "/40players.json"
 
 class Roster extends Component {
-
-
-    static playersPerTeam = 6
 
     constructor(props) {
         super(props)
@@ -23,15 +22,12 @@ class Roster extends Component {
         this.render = this.render.bind(this)
         this.retrievePlayers = this.retrievePlayers.bind(this)
         this.resetTeams = this.resetTeams.bind(this)
-        this.renderForm = this.renderForm.bind(this)
+        this.buildTeams = this.buildTeams.bind(this)
         this.renderRoster = this.renderRoster.bind(this)
         this.renderTeams = this.renderTeams.bind(this)
         this.handleChange = this.handleChange.bind(this)
-        this.handleSubmit = this.handleSubmit.bind(this)
         this.eachPlayer = this.eachPlayer.bind(this)
         this.eachTeam = this.eachTeam.bind(this)
-
-
     }
 
 
@@ -60,9 +56,13 @@ class Roster extends Component {
 
     async retrievePlayers() {
         const url = rosterUrl
-        await this.tb.loadFromUrl(url)
-
-        this.updateState()
+        if (await this.tb.loadFromUrl(url)) {
+            this.setState({
+                numberOfSquads: this.tb.maxTeams(),
+                players: this.tb.unassignedPlayers(),
+                teams: Object.values(this.tb.teams)
+            })
+        }
 
     }
 
@@ -80,7 +80,7 @@ class Roster extends Component {
         return (
             <Team className="Team"
                 key={team._id + i}
-                index={i+1}
+                index={i + 1}
                 players={team.players}
                 skillSet={this.tb.teamSkillSet(team._id)}
             />
@@ -92,34 +92,19 @@ class Roster extends Component {
         this.setState({ numberOfSquads: event.target.value });
     }
 
-    handleSubmit(event) {
+
+    buildTeams() {
         if (this.state.numberOfSquads <= 0) {
             return
         }
         if (this.state.numberOfSquads > this.tb.maxTeams()) {
             alert(`You don't have enough players to generate ${this.state.numberOfSquads} teams!`)
         } else {
-            this.tb.generateTeams(this.state.numberOfSquads)
+            this.tb.generateTeamsRepeatedly(this.state.numberOfSquads, 100)
 
             this.updateState()
         }
-        event.preventDefault();
-    }
 
-
-
-    renderForm() {
-        return (
-            <div className="Entry" style={this.style}>
-                <form onSubmit={this.handleSubmit}>
-                    <label>
-                        Number of Squads:
-          <input type="text" value={this.state.numberOfSquads} onChange={this.handleChange} />
-                    </label>
-                    <input type="submit" value="Create" />
-                </form>
-            </div>
-        )
     }
 
     renderRoster() {
@@ -134,26 +119,84 @@ class Roster extends Component {
         )
     }
 
-    render() {
-        return (           
-            <div>     
-            <button onClick={this.retrievePlayers}> Load roster </button>
-            <button onClick={this.resetTeams}>Reset Teams</button>
-            <div className="">
-                    {this.renderForm()}
-                </div>
+    showBalanceFactor() {
+        if (this.state.teams.length > 1) {
+            return `Balance Factor ${Math.round(this.tb.skillBalanceFactor())}`
+        }
+        return ""
+    }
 
-            <div className="Container">
 
-                <div className="Column">
-                    There are {this.tb.unassignedPlayers().length} players left to assign
-                    {this.renderRoster()}
+    renderControls() {
+        if (this.state.teams.length > 0 || this.state.players.length > 0) {
+            return (
+                <div className="Controls">
+                    <div className="Entry" >
+                        Number of Teams
+                        <input  className="Number" 
+                                length='2' 
+                                type="number" 
+                                value={this.state.numberOfSquads} 
+                                onChange={this.handleChange} 
+                                />
+                        
+                        <button className="Button" onClick={this.buildTeams}>Create Teams</button>
+                        <button className="Button" onClick={this.resetTeams}>Reset Teams</button>
+                    </div>
                 </div>
-                <div className="Column">
-                    Teams ({this.state.teams.length}):
-                    {this.renderTeams()}
+            )
+        } else {
+            return(
+                "No player data was retrieved from the server, please try again later"
+            )
+        }
+    }
+
+    renderWelcome() {
+        return (
+            <div className="Welcome">
+                <div>
+                    Welcome to the Shinny League Team Builder!
+            <p>
+                        Players are automatically retreived from the web.
+                        You can choose how many teams are created.
+                        The alrorithm attempts to keep the teams fairly balanced.
+                        Balance factors are reported for the league, the lower the balance factor, the more balanced the teams.
+                        Skills are represented by bars.
+                </p>
+                </div>
+                <div className="Legend">
+                    <div><Bar type="Shooting" value={10} />Shooting</div>
+                    <div><Bar type="Skating" value={10} />Skating</div>
+                    <div><Bar type="Checking" value={10} />Checking</div>
                 </div>
             </div>
+
+        )
+    }
+
+    render() {
+        return (
+            <div>
+                {this.renderWelcome()}
+                {this.renderControls()}
+                <div className="Container">
+                    <div className="TeamContainer"
+                        style={{
+                            display: this.state.teams.length > 0 ? '' : 'none',
+                        }}
+                    >
+                        {this.renderTeams()}
+                        {this.showBalanceFactor()}
+                    </div>
+
+                    <div className={this.state.teams.length < 0 ? "Container" : "Column"}>
+                        <div className="Unassigned">
+                            There are {this.tb.unassignedPlayers().length} players on the waiting list
+                    {this.renderRoster()}
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }
