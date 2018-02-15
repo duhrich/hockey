@@ -9,7 +9,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">Hockey Team Builder<img className="App-logo" src='goalie-mask.png'/></h1>
+          <h1 className="App-title">Hockey Team Builder<img className="App-logo" alt="Goalie Mask" src='goalie-mask.png'/></h1>
           
         </header>
         <Roster />
