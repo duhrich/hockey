@@ -1,7 +1,7 @@
 # Devin Uhrich submission for ATB Hockey Squad Coding Exercise
 Here are a few notes about my submission.
 - Written in React (using create-react-app)
-- I've published it at <http://app.electrollama.net/hockey/index.html>
+- I've published it at <http://app.electrollama.net/hockey>
 - I used Jest/Enzyme for unit and UI testing
 - Rather than import a graphing framework, the stats are just rendered with a div and styled appropriately
 - The algorithm for balancing teams is certainly not optimal.  It randomly generates 100 sets of teams and evaluates their "balance factor".  The "balance factor" is essentially the average of the highest skill differential across all the skill types.  It picks the randomly generated set with the lowest balance factor and displays it.
