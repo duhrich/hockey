@@ -13,12 +13,13 @@ it('renders without crashing', () => {
   const skill = ReactDOM.render(<Skill type="Test" rating="4"/>, div);
  
   ReactDOM.unmountComponentAtNode(div);
-});
+})
 
+it('passes props to bar', () => {
+  const wrapper = shallow(<Skill type="TEST" rating={4}/>);
+  expect(wrapper.find('.Skill').children().get(0).props).toHaveProperty('type','TEST')
+  expect(wrapper.find('.Skill').children().get(0).props).toHaveProperty('value',0.4)
 
-
-it('colors properly', () => {
-    const wrapper = shallow(<Bar />)
-    console.log(wrapper.find('Bar'))
-  });
+  
+})
   

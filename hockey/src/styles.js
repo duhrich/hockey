@@ -30,3 +30,4 @@ export const Bar = styled.div`
         return Math.floor(value * 2.5)
     }}px;
 `
+Bar.displayName = "SkillBar"
