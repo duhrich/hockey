@@ -164,9 +164,9 @@ class Roster extends Component {
                 <div>
                     Welcome to the Shinny League Team Builder!
             <p>
-                        Players are automatically retreived from the web.
+                        Players are automatically retrieved from the web.
                         You can choose how many teams are created.
-                        The alrorithm attempts to keep the teams fairly balanced.
+                        The algrorithm attempts to keep the teams fairly balanced.
                         Balance factors are reported for the league, the lower the balance factor, the more balanced the teams.
                         Skills are represented by bars.
                 </p>
